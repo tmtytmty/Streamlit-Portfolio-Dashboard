@@ -2,7 +2,7 @@
 
 This is a personal project for better management of my portfolios across multiple brokers.
 
-The app lets users paste a Google Sheets link, then automatically loads portfolio holdings, fetches live market prices, converts non-USD holdings into USD, shows allocation and exposure breakdowns, flags allocation limits, and runs a historical simulation against a benchmark like SPY.
+The app lets users paste a public Google Sheets link, then automatically loads portfolio holdings, fetches live market prices, converts non-USD holdings into USD, shows allocation and exposure breakdowns, flags allocation limits, and runs a historical simulation against a benchmark like SPY.
 
 ## Disclaimer
 
