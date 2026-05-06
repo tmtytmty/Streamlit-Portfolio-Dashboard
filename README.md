@@ -65,9 +65,10 @@ Example:
 
 ```text
 Ticker    Currency    Category      Broker      Position    Max allocation    Don't add above
-VTV       USD         Broad ETF     Firstrade   15          20.0%             15.0%
-Cash      USD         Cash          IBKR        4210        Free              Free
-NG.L      GBP         Non-cyclical  IBKR        175         7.5%              5.0%
+VOO       USD         Broad ETF     Schwab      15          50.0%             40.0%
+Cash      USD         Bank          Schwab      1000
+HSBA.L    GBP         Bank          IBKR        175         7.5%              5.0%
+Cash      GBP         Cash          IBKR        1000
 ```
 
 ## Google Sheet Sharing
