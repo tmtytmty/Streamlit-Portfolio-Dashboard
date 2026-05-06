@@ -1,10 +1,12 @@
-import streamlit as st
-import pandas as pd
+from datetime import datetime, timedelta
+import re
+
 import numpy as np
-import yfinance as yf
+import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-from datetime import datetime, timedelta
+import streamlit as st
+import yfinance as yf
 
 
 # ============================================================
@@ -26,6 +28,61 @@ st.set_page_config(
 )
 
 st.title("📊 Portfolio Dashboard")
+
+
+# ============================================================
+# Google Sheet input
+# ============================================================
+
+def parse_google_sheet_input(sheet_input):
+    """
+    Accepts either a full Google Sheets URL or a raw Google Sheet ID.
+
+    Examples:
+    - https://docs.google.com/spreadsheets/d/<SHEET_ID>/edit#gid=0
+    - <SHEET_ID>
+    """
+    sheet_input = str(sheet_input).strip()
+
+    if not sheet_input:
+        return None, None
+
+    gid = "0"
+
+    gid_match = re.search(r"[#&?]gid=([0-9]+)", sheet_input)
+    if gid_match:
+        gid = gid_match.group(1)
+
+    sheet_id_match = re.search(r"/spreadsheets/d/([a-zA-Z0-9-_]+)", sheet_input)
+    if sheet_id_match:
+        return sheet_id_match.group(1), gid
+
+    # If it is not a URL, treat it as a raw Sheet ID.
+    if re.fullmatch(r"[a-zA-Z0-9-_]+", sheet_input):
+        return sheet_input, gid
+
+    return None, None
+
+
+st.caption(
+    "Paste a Google Sheets link or Sheet ID. "
+    "The sheet must be shared as **Anyone with the link can view** so the app can read the CSV export."
+)
+
+sheet_input = st.text_input(
+    "Google Sheet link or ID",
+    placeholder="https://docs.google.com/spreadsheets/d/...",
+)
+
+sheet_id, gid = parse_google_sheet_input(sheet_input)
+
+if not sheet_input:
+    st.info("Paste a Google Sheet link to load a portfolio dashboard.")
+    st.stop()
+
+if sheet_id is None:
+    st.error("That does not look like a valid Google Sheets link or Sheet ID.")
+    st.stop()
 
 
 # ============================================================
@@ -187,10 +244,7 @@ def combine_cash_rows(df):
 # ============================================================
 
 @st.cache_data(ttl=SHEET_CACHE_SECONDS)
-def load_google_sheet():
-    sheet_id = st.secrets["google_sheet"]["sheet_id"]
-    gid = st.secrets["google_sheet"].get("gid", "0")
-
+def load_google_sheet(sheet_id, gid="0"):
     csv_url = (
         f"https://docs.google.com/spreadsheets/d/{sheet_id}/export"
         f"?format=csv&gid={gid}"
@@ -731,7 +785,7 @@ def run_historical_simulation(
 
 try:
     with st.spinner("Loading portfolio..."):
-        raw_df = load_google_sheet()
+        raw_df = load_google_sheet(sheet_id, gid)
         portfolio, total_value = build_portfolio(raw_df)
 
     # ========================================================
@@ -1473,22 +1527,6 @@ try:
                             use_container_width=True,
                         )
 
-except KeyError as e:
-    st.error("Missing Streamlit secret.")
-    st.write(
-        "Create `.streamlit/secrets.toml` locally, or add the same values in "
-        "Streamlit Cloud app secrets."
-    )
-    st.code(
-        """
-[google_sheet]
-sheet_id = "YOUR_GOOGLE_SHEET_ID"
-gid = "0"
-""".strip(),
-        language="toml",
-    )
-    st.exception(e)
-
 except Exception as e:
-    st.error("Dashboard failed to load.")
+    st.error("Dashboard failed to load. Check that the Google Sheet is shared as: Anyone with the link can view.")
     st.exception(e)
