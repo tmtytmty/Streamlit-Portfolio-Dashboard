@@ -1,6 +1,6 @@
 # Portfolio Dashboard
 
-A Streamlit dashboard for visualizing a personal investment portfolio from a Google Sheet.
+This is a personal project for better management of my portfolios across multiple brokers.
 
 The app lets users paste a Google Sheets link, then automatically loads portfolio holdings, fetches live market prices, converts non-USD holdings into USD, shows allocation and exposure breakdowns, flags allocation limits, and runs a historical simulation against a benchmark like SPY.
 
@@ -57,3 +57,131 @@ Max allocation
 Don't add above
 Thesis / catalysts
 Notes
+
+```
+
+
+Example:
+
+```text
+Ticker    Currency    Category      Broker      Position    Max allocation    Don't add above
+VTV       USD         Broad ETF     Firstrade   15          20.0%             15.0%
+Cash      USD         Cash          IBKR        4210        Free              Free
+NG.L      GBP         Non-cyclical  IBKR        175         7.5%              5.0%
+```
+
+## Google Sheet Sharing
+
+The Google Sheet must be shared as:
+
+```text
+Anyone with the link can view
+```
+
+The app reads the sheet using Google Sheets CSV export. It does not require Google Cloud Platform, Google API credentials, or a service account.
+
+## Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
+cd YOUR_REPO_NAME
+```
+
+Create and activate a Conda environment:
+
+```bash
+conda create -n portfolio-dashboard python=3.11 -y
+conda activate portfolio-dashboard
+```
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+## Requirements
+
+`requirements.txt` should contain:
+
+```txt
+streamlit
+pandas
+numpy
+yfinance
+plotly
+```
+
+## Run Locally
+
+Start the Streamlit app:
+
+```bash
+streamlit run app.py
+```
+
+Then open the local URL shown in the terminal, usually:
+
+```text
+http://localhost:8501
+```
+
+Paste your Google Sheet link into the app to load the dashboard.
+
+## Deployment
+
+This app can be deployed on Streamlit Community Cloud.
+
+1. Push the repo to GitHub.
+2. Go to Streamlit Community Cloud.
+3. Create a new app from the GitHub repo.
+4. Set the main file path to:
+
+```text
+app.py
+```
+
+5. Deploy.
+
+No Streamlit secrets are required for the current version because users paste their own Google Sheet link directly into the app.
+
+## Privacy Notes
+
+This app does not store Google Sheet links, passwords, or API keys.
+
+However, the Google Sheet must be shared as **Anyone with the link can view** for the app to read it. Anyone with the sheet link may be able to view the data.
+
+If you deploy the Streamlit app publicly, anyone with the app URL may be able to use the dashboard. Do not paste sensitive portfolio data into a public app unless you are comfortable with that risk.
+
+## Historical Simulation Notes
+
+The historical simulation is not a true record of your actual historical portfolio performance.
+
+It applies your current holdings backward through historical price data. This answers:
+
+```text
+How would today's portfolio have performed historically?
+```
+
+It does not answer:
+
+```text
+What was my actual portfolio performance over time?
+```
+
+To calculate actual historical performance, you would need transaction history, deposits, withdrawals, dividends, taxes, fees, slippage, and historical position sizes.
+
+## Limitations
+
+- Market data comes from Yahoo Finance through `yfinance`
+- Price data may occasionally be missing or delayed
+- Foreign exchange conversion uses Yahoo Finance FX tickers
+- Cash is treated as constant during historical simulation
+- The dashboard assumes current holdings are representative for historical simulation
+- Google Sheets must be publicly readable by link
+
+## License
+
+This project is for personal portfolio tracking and educational use.
