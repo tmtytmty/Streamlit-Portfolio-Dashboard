@@ -186,3 +186,4 @@ To calculate actual historical performance, you would need transaction history, 
 ## License
 
 This project is for personal portfolio tracking and personal use.
+
