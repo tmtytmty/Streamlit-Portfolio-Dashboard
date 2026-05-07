@@ -1466,27 +1466,6 @@ try:
 
                     st.plotly_chart(fig, use_container_width=True)
 
-                    return_cols = [
-                        "Portfolio Return",
-                        f"{benchmark} Return",
-                    ]
-
-                    fig = px.line(
-                        value_history,
-                        x=value_history.index,
-                        y=return_cols,
-                        title=f"Portfolio vs {benchmark} — Cumulative Return",
-                    )
-
-                    fig.update_layout(
-                        xaxis_title="Date",
-                        yaxis_title="Cumulative Return",
-                        yaxis_tickformat=".0%",
-                        legend_title_text="Series",
-                    )
-
-                    st.plotly_chart(fig, use_container_width=True)
-
                     with st.expander("View simulated USD price data"):
                         st.dataframe(
                             usd_price_data,
